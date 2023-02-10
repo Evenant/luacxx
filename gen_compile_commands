@@ -1,0 +1,11 @@
+#!/bin/bash
+
+echo "
+[
+	{
+		\"directory\":\"$PWD\",
+		\"command\":\"clang++ -I.\",
+		\"file\":\"src/*.cpp\"
+	}
+]
+" > compile_commands.json
