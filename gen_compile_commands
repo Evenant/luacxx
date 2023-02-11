@@ -4,7 +4,7 @@ echo "
 [
 	{
 		\"directory\":\"$PWD\",
-		\"command\":\"clang++ -I.\",
+		\"command\":\"g++ -I$PWD -std=gnu++14\",
 		\"file\":\"src/*.cpp\"
 	}
 ]
