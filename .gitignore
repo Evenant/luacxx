@@ -4,3 +4,6 @@
 *.a
 
 /.vscode
+
+/tests/*
+!/tests/*.cpp
