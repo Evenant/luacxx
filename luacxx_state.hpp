@@ -13,6 +13,7 @@
 #define LUACXX_STATE_HPP
 
 #include "luacxx_defs.hpp"
+#include <memory>
 
 #ifndef LUACXX_SRC
 typedef struct lua_State lua_State;
@@ -38,10 +39,16 @@ namespace luacxx
 		/**
 		 * state_misc.cpp
 		 */
-		
-		#ifdef LUACXX_SRC
-		
-		#endif
+
+		/**
+		 * @brief Returns handle to the global table (or the _G table).
+		 * 
+		 * @return table 
+		 */
+		std::unique_ptr<table> global_table();
+
+        void dofile(const char* filename);
+		void dostring(const char* str);
 
 		/**
 		 * state_meta.cpp
@@ -51,31 +58,68 @@ namespace luacxx
 		 * @brief Create a new Lua object
 		 */
 		lua();
+
 		/**
 		 * @brief Construct a new Lua object from a raw `lua_State`
 		 * 
 		 * @param L 
 		 */
 		lua(lua_State* L);
+
+
 		~lua();
-		table global();
 
 		/**
 		 * state_stdlib.cpp
 		 */
+		
+		/**
+		 * @brief Opens Base Library.
+		 */
 		void openlib_base();
+
+		/**
+		 * @brief Opens Table Library. (required for using `global_table()`)
+		 */
 		void openlib_table();
+
+		/**
+		 * @brief Opens IO Library.
+		 */
 		void openlib_io();
+
+		/**
+		 * @brief Opens OS Library.
+		 */
 		void openlib_os();
+
+		/**
+		 * @brief Opens String Library.
+		 */
 		void openlib_string();
+
+		/**
+		 * @brief Opens Math Library.
+		 */
 		void openlib_math();
+
+		/**
+		 * @brief Opens Debug Library.
+		 */
 		void openlib_debug();
+
+		/**
+		 * @brief Opens Package Library.
+		 */
 		void openlib_package();
 
 		#ifdef LUACXX_LUAJIT
 		// TODO: Put stuff for LuaJIT here.
 		#endif
 
+		/**
+		 * @brief Runs every other `openlib_*`
+		 */
 		void openlib_all();
 	};
 }

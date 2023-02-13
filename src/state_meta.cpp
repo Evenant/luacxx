@@ -25,17 +25,19 @@ lua::lua()
 {
 	this->state = luaL_newstate();
 	this->is_from_raw_state = false;
+	printf("Created Lua state\n");
 }
 
 lua::lua(lua_State* L)
 {
 	this->state = L;
 	this->is_from_raw_state = true;
+	printf("Created Lua state from raw `lua_State`\n");
 }
 
 lua::~lua()
 {
 	if (!this->is_from_raw_state)
 		lua_close(this->state);
-	
+	printf("Destroyed Lua state\n");
 }

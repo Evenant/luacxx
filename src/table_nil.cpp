@@ -9,7 +9,6 @@
  * 
  */
 
-#include "lua.h"
 #define LUACXX_SRC
 extern "C"
 {
@@ -28,9 +27,9 @@ bool table::is_nil(const char* field)
 {
 	int t = this->get_table_from_path();
 	lua_getfield(Lua, t, field);
-	bool n = (bool)lua_isnil(Lua, t+1);
+	bool b = (bool)lua_isnil(Lua, t+1);
 	lua_settop(Lua, 0);
-	return n;
+	return b;
 }
 
 void table::nillify(const char *field)
@@ -38,6 +37,7 @@ void table::nillify(const char *field)
 	int t = this->get_table_from_path();
 	lua_pushnil(Lua);
 	lua_setfield(Lua, t, field);
+	this -> set_table_from_path();
 	lua_settop(Lua, 0);
 }
 

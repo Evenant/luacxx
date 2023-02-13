@@ -11,8 +11,8 @@ INCLUA=
 ##########################################################################################
 
 # Standard compiler stuff
-CXX=g++
-AR=ar
+CXX=clang++
+AR=llvm-ar
 CXX_STD=gnu++14
 
 # Where output files (libraries, headers and stuff) are put into when running `make pack`.
@@ -47,6 +47,7 @@ HEADERS= \
 
 LUACXX_STATE= \
 	src/state_meta.o \
+	src/state_misc.o \
 	src/state_stdlib.o
 
 LUACXX_TABLE= \
@@ -62,31 +63,33 @@ LUACXX_ALL = ${LUACXX_STATE} ${LUACXX_TABLE}
 LUACXX_TESTS= \
 	tests/get_table
 
-
 # By default, only build the project
 default: build
 
 all: build tests doxy pack
 
 # Build and run tests
-tests: build tests_build tests_run
+tests: ${LIBRARY_OUT} tests_build tests_run
 
-tests_build: build ${LUACXX_TESTS}
+tests_build: ${LIBRARY_OUT} ${LUACXX_TESTS}
 
 tests_run: tests_build
 	$(foreach a, ${LUACXX_TESTS}, ${a} && ) echo ""
+	echo "Tests run with no non-zero returns!"
+	read v
 
+# An alias
 build: ${LIBRARY_OUT}
 
 # Package
-pack: build
+pack: ${LIBRARY_OUT}
 
 # An alias
-doxy: docs/
+doxy: docs
 
 # Build the documentation for the public API to LuaCXX
-docs/: ${HEADERS} 
-	echo "$^" && doxygen .doxy
+docs: ${HEADERS} 
+	doxygen .doxy
 
 # Serve the documentation HTML files locally with python, you can then view it from the browser.
 doxy_view:
@@ -96,9 +99,9 @@ doxy_view:
 clean:
 	rm src/*.o
 	rm tests/*.o
-	rm ${LUACXX_TESTS}
 	rm ${LIBRARY_OUT}
 	rm -rf docs/
+	rm ${LUACXX_TESTS}
 
 .PHONY: \
 	default \
@@ -112,11 +115,13 @@ clean:
 # BUILDING LuaCXX AND TESTS
 
 $(LIBRARY_OUT): ${LUACXX_ALL}
-	${AR} -r $(LIBRARY_OUT) ${LUACXX_ALL}
+	${AR} -rc $(LIBRARY_OUT) ${LUACXX_ALL}
 
 # luacxx_state
 
 src/state_meta.o: src/state_meta.cpp
+	$(cxx)
+src/state_misc.o: src/state_misc.cpp
 	$(cxx)
 src/state_stdlib.o: src/state_stdlib.cpp
 	$(cxx)
@@ -152,15 +157,28 @@ tests/get_table.o: tests/get_table.cpp
 
 # For compiling LuaCXX source files
 define cxx
-${CXX} $^ -c -I${PWD} -I${INCLUA} ${MYCXXFLAGS} ${MYCXXFLAGS_BUILD} -o $@
+${CXX} $^ -c \
+	-I${PWD} \
+	-I${INCLUA} \
+	${MYCXXFLAGS} \
+	${MYCXXFLAGS_BUILD} \
+	-o $@
 endef
 
 # For compiling LuaCXX test source files
 define cxx_test
-${CXX} $^ -c -I${PWD} -I${INCLUA} ${MYCXXFLAGS} ${MYCXXFLAGS_TEST} -o $@
+${CXX} $^ -c \
+	-I${PWD} \
+	-I${INCLUA} \
+	${MYCXXFLAGS} \
+	${MYCXXFLAGS_TEST} \
+	-o $@
 endef
 
 # For creating LuaCXX test programs
 define cxx_testprogram
-${CXX} $^ ${LIBRARY_OUT} ${LIBLUA} -o $@
+${CXX} $^ \
+	${LIBRARY_OUT} \
+	${LIBLUA} \
+	-o $@
 endef

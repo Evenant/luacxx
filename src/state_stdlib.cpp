@@ -9,7 +9,6 @@
  * @brief Definitions related to opening the Lua standard library
  */
 
-#include "luacxx_defs.hpp"
 #define LUACXX_SRC
 extern "C"
 {

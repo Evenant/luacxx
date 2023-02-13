@@ -9,7 +9,6 @@
  * @brief 
  */
 
-#include "lua.h"
 #define LUACXX_SRC
 extern "C"
 {
@@ -29,6 +28,7 @@ void table::set_boolean(const char *field, bool value)
 	int t = this->get_table_from_path();
 	lua_pushboolean(Lua, value);
 	lua_setfield(Lua, t, field);
+	this->set_table_from_path();
 	lua_settop(Lua, 0);
 }
 

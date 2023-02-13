@@ -15,6 +15,7 @@
 #include "luacxx_defs.hpp"
 
 #include <vector>
+#include <memory>
 
 namespace luacxx
 {
@@ -28,12 +29,17 @@ namespace luacxx
 		 * Where this table is on the stack.
 		 */
 		int get_table_from_path(); // table_misc.cpp
+		void set_table_from_path(); // table_misc.cpp
 
+
+		#ifdef LUACXX_SRC
+		public:
+		#endif
+		lua *state = 0;
 		/**
 		 * @brief The path to this table from the global table. ( if empty, then this is the global table )
 		 */
 		std::vector<const char*> path;
-		lua *state = 0;
 
 		public:
 		/**
@@ -104,9 +110,9 @@ namespace luacxx
 		void nillify(const char* field);
 		void nillify_all();
 
-		table new_table(const char* field, int field_count);
-		table get_table(const char* field);
-		void clone_from(table from);
+		std::unique_ptr<table> new_table(const char* field, int field_count);
+		std::unique_ptr<table> get_table(const char* field);
+		void clone_from(std::unique_ptr<table> from);
 	};
 }
 
