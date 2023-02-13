@@ -12,10 +12,18 @@
 #ifndef LUACXX_DEFS_HPP
 #define LUACXX_DEFS_HPP
 
+#include <memory>
+
 namespace luacxx
 {
 	typedef class table table;
 	typedef class lua lua;
+
+	/**
+	 * @brief To create a new state: `Lua v(new lua)`
+	 */
+	typedef std::unique_ptr<lua> Lua;
+	typedef std::unique_ptr<table> LuaTable;
 	
 	// LUACXX_SRC is a definition that tells this header file that the source file including it is part
 	// of LuaCXX, and thus will include Lua headers.
