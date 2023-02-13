@@ -82,7 +82,8 @@ tests_run: tests_build
 build: ${LIBRARY_OUT}
 
 # Package
-pack: ${LIBRARY_OUT}
+pack: ${LIBRARY_OUT} ${HEADERS}
+	
 
 # An alias
 doxy: docs
@@ -114,7 +115,7 @@ clean:
 
 # BUILDING LuaCXX AND TESTS
 
-$(LIBRARY_OUT): ${LUACXX_ALL}
+$(LIBRARY_OUT): ${LUACXX_ALL} ${HEADERS}
 	${AR} -rc $(LIBRARY_OUT) ${LUACXX_ALL}
 
 # luacxx_state
