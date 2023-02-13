@@ -1,10 +1,12 @@
 #!/bin/bash
 
+# Generate a compile_commands.json file
+
 echo "
 [
 	{
 		\"directory\":\"$PWD\",
-		\"command\":\"g++ -I$PWD -std=gnu++14\",
+		\"command\":\"clang++ -I$PWD -std=gnu++14\",
 		\"file\":\"src/*.cpp\"
 	}
 ]
