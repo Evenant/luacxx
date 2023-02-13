@@ -81,9 +81,18 @@ tests_run: tests_build
 # An alias
 build: ${LIBRARY_OUT}
 
-# Package
-pack: ${LIBRARY_OUT} ${HEADERS}
-	
+# Package the output files into a tuacxx.tar.gz archive.
+pack: ${LIBRARY_OUT} ${HEADERS} doxy
+	mkdir -p pack/include
+	mkdir -p pack/lib
+	mkdir -p pack/share/luacxx
+
+	cp -t pack/include/ ${HEADERS}
+	cp ${LIBRARY_OUT} pack/lib
+	cp -r -t pack/share/luacxx docs/*
+
+	tar -cf luacxx.tar pack/*
+	gzip luacxx.tar
 
 # An alias
 doxy: docs
