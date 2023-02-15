@@ -52,6 +52,7 @@ LUACXX_STATE= \
 
 LUACXX_TABLE= \
 	src/table_boolean.o \
+	src/table_meta.o \
 	src/table_misc.o \
 	src/table_nil.o \
 	src/table_number.o \
@@ -69,20 +70,19 @@ default: build
 all: build tests doxy pack
 
 # Build and run tests
-tests: ${LIBRARY_OUT} tests_build tests_run
+tests: tests_build tests_run
 
 tests_build: ${LIBRARY_OUT} ${LUACXX_TESTS}
 
 tests_run: tests_build
-	$(foreach a, ${LUACXX_TESTS}, ${a} && ) echo ""
-	echo "Tests run with no non-zero returns!"
+	$(foreach a, ${LUACXX_TESTS}, ${a} && ) echo "Tests run with no non-zero returns!"
 	read v
 
 # An alias
 build: ${LIBRARY_OUT}
 
 # Package the output files into a tuacxx.tar.gz archive.
-pack: ${LIBRARY_OUT} ${HEADERS} doxy
+pack: build tests doxy
 	mkdir -p pack/include
 	mkdir -p pack/lib
 	mkdir -p pack/share/luacxx
@@ -93,25 +93,27 @@ pack: ${LIBRARY_OUT} ${HEADERS} doxy
 
 	tar -cf luacxx.tar pack/*
 	gzip luacxx.tar
+	rm -rf pack
 
 # An alias
 doxy: docs
 
 # Build the documentation for the public API to LuaCXX
-docs: ${HEADERS} 
+docs:
 	doxygen .doxy
 
 # Serve the documentation HTML files locally with python, you can then view it from the browser.
 doxy_view:
 	cd docs/html && \
-		python -m http.server
+		python3 -m http.server
 
 clean:
 	rm src/*.o
-	rm tests/*.o
 	rm ${LIBRARY_OUT}
-	rm -rf docs/
+	rm tests/*.o
 	rm ${LUACXX_TESTS}
+	rm -rf docs/
+	rm luacxx.tar.gz
 
 .PHONY: \
 	default \
@@ -124,9 +126,18 @@ clean:
 
 # BUILDING LuaCXX AND TESTS
 
+ifeq (${DYLIB},)
+
+# Build LuaCXX as a static library
 $(LIBRARY_OUT): ${LUACXX_ALL} ${HEADERS}
 	${AR} -rc $(LIBRARY_OUT) ${LUACXX_ALL}
+else
 
+# Build LuaCXX as a dynamic library
+$(LIBRARY_OUT): ${LUACXX_ALL} ${HEADERS}
+	${CXX} -shared ${LUACXX_ALL} -o ${LIBRARY_OUT}
+MYCXXFLAGS+= -fpic
+endif
 # luacxx_state
 
 src/state_meta.o: src/state_meta.cpp
@@ -140,6 +151,9 @@ src/state_stdlib.o: src/state_stdlib.cpp
 
 src/table_boolean.o: src/table_boolean.cpp
 	$(cxx)
+
+src/table_meta.o: src/table_meta.cpp
+	${cxx}
 
 src/table_misc.o: src/table_misc.cpp
 	$(cxx)
@@ -188,7 +202,7 @@ endef
 # For creating LuaCXX test programs
 define cxx_testprogram
 ${CXX} $^ \
-	${LIBRARY_OUT} \
+	${PWD}/${LIBRARY_OUT} \
 	${LIBLUA} \
 	-o $@
 endef

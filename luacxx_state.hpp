@@ -45,7 +45,7 @@ namespace luacxx
 		 * 
 		 * @return table 
 		 */
-		std::unique_ptr<table> global_table();
+		std::shared_ptr<table> global_table();
 
         void dofile(const char* filename);
 		void dostring(const char* str);

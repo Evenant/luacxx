@@ -8,6 +8,11 @@ echo "
 		\"directory\":\"$PWD\",
 		\"command\":\"clang++ -I$PWD -std=gnu++14\",
 		\"file\":\"src/*.cpp\"
+	},
+	{
+		\"directory\":\"$PWD\",
+		\"command\":\"clang++ -I$PWD -std=gnu++14\",
+		\"file\":\"tests/*cpp\"
 	}
 ]
 " > compile_commands.json

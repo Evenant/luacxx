@@ -42,6 +42,21 @@ namespace luacxx
 		std::vector<const char*> path;
 
 		public:
+
+		/**
+		 * table_meta.cpp
+		 */
+
+		#ifdef LUACXX_SRC
+
+		/**
+		 * @brief Construct a new table object, should only be used internally.
+		 * 
+		 * @param frompath 
+		 */
+		table(std::vector<const char*> frompath);
+		#endif
+		
 		/**
 		 * table_misc.cpp
 		 */
@@ -52,6 +67,8 @@ namespace luacxx
 		 * @return std::vector<const char*> 
 		 */
 		std::vector<const char*> get_all_fields();
+
+		int maxlength();
 
 		/**
 		 * table_number.cpp
@@ -110,9 +127,16 @@ namespace luacxx
 		void nillify(const char* field);
 		void nillify_all();
 
-		std::unique_ptr<table> new_table(const char* field, int field_count);
-		std::unique_ptr<table> get_table(const char* field);
-		void clone_from(std::unique_ptr<table> from);
+		/**
+		 * table_tables.cpp
+		 */
+
+		std::shared_ptr<table> new_table(const char* field, int field_count);
+		std::shared_ptr<table> get_table(const char* field);
+		void clone_from(std::shared_ptr<table> from);
+		bool is_table(const char* field);
+
+
 	};
 }
 

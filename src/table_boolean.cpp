@@ -27,7 +27,7 @@ void table::set_boolean(const char *field, bool value)
 {
 	int t = this->get_table_from_path();
 	lua_pushboolean(Lua, value);
-	lua_setfield(Lua, t, field);
+	lua_setfield(Lua, -2, field);
 	this->set_table_from_path();
 	lua_settop(Lua, 0);
 }
@@ -35,8 +35,8 @@ void table::set_boolean(const char *field, bool value)
 bool table::get_boolean(const char* field)
 {
 	int t = this->get_table_from_path();
-	lua_getfield(Lua, t, field);
-	bool b = (bool)lua_toboolean(Lua, t+1);
+	lua_getfield(Lua, -1, field);
+	bool b = (bool)lua_toboolean(Lua, -1);
 	lua_settop(Lua, 0);
 	return b;
 }
@@ -44,8 +44,8 @@ bool table::get_boolean(const char* field)
 bool table::is_boolean(const char *field)
 {
 	int t = this->get_table_from_path();
-	lua_getfield(Lua, t, field);
-	bool b = (bool)lua_isboolean(Lua, t+1);
+	lua_getfield(Lua, -1, field);
+	bool b = (bool)lua_isboolean(Lua, -1);
 	lua_settop(Lua, 0);
 	return b;
 }

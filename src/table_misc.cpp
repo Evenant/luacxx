@@ -25,14 +25,14 @@ using namespace luacxx;
 int table::get_table_from_path()
 {
 	lua_getglobal(Lua,"_G");
-	for (auto i = this->path.begin();i != this->path.end();++i)
+	for (auto i = this->path.cbegin();i != this->path.cend();++i)
 		lua_getfield(Lua, -1, *i);
 	return lua_gettop(Lua);
 }
 
 void table::set_table_from_path()
 {
-	for (auto i = this->path.rbegin();i != this->path.rend();++i)
+	for (auto i = this->path.cbegin();i != this->path.cend();++i)
 		lua_setfield(Lua, -2, *i);
 	lua_setglobal(Lua, "_G");
 	
@@ -57,4 +57,13 @@ std::vector<const char*> table::get_all_fields()
 
 	lua_settop(Lua, 0);
 	return vs;
+}
+
+int table::maxlength()
+{
+	this->get_table_from_path();
+	int i = (int)lua_objlen(Lua, -1);
+	lua_settop(Lua, 0);
+	return i;
+
 }

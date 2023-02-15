@@ -45,7 +45,7 @@ bool table::is_string(const char *field)
 {
 	int t = this->get_table_from_path();
 	lua_getfield(Lua, t, field);
-	bool b = (bool)lua_isstring(Lua, t+1);
+	bool b = (bool)lua_isstring(Lua, -1);
 	lua_settop(Lua, 0);
 	return b;
 }

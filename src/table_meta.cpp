@@ -1,12 +1,12 @@
 /**
- * @file state_misc.cpp
+ * @file table_meta.cpp
  * @author scongebop (littlefast2@gmail.com)
  * @version 0.1
- * @date 2023-02-11
+ * @date 2023-02-15
  * 
  * @copyright Copyright (c) 2023
  * 
- * @brief 
+ * @brief for special methods in `table` like the constructor or destructor.
  */
 
 #define LUACXX_SRC
@@ -21,9 +21,7 @@ extern "C"
 
 using namespace luacxx;
 
-std::shared_ptr<table> lua::global_table()
+table::table(std::vector<const char*> frompath)
 {
-	std::shared_ptr<table> t(new table({}));
-	t -> state = this;
-	return t;
+	this->path = frompath;
 }

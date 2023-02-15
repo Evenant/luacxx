@@ -44,7 +44,7 @@ bool table::is_number(const char *field)
 {
 	int t = this->get_table_from_path();
 	lua_getfield(Lua, t, field);
-	bool b = (bool)lua_isnumber(Lua, t+1);
+	bool b = (bool)lua_isnumber(Lua, -1);
 	lua_settop(Lua, 0);
 	return b;
 }
